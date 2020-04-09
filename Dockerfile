@@ -1,5 +1,5 @@
-FROM sensedia/openjdk11-base:latest
+FROM openjdk:11-jdk-slim
 
-ADD target/vertx_mongodb-1.0.0-SNAPSHOT-fat.jar /sensedia/app.jar
+ADD target/vertx_mongodb-1.0.0-SNAPSHOT-fat.jar /app/app.jar
 
-CMD /usr/bin/java $JAVA_OPTS -jar app.jar
+CMD ["java", "-jar", "/app/app.jar"]
