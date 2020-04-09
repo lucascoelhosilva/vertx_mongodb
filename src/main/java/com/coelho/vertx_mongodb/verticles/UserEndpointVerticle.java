@@ -12,6 +12,7 @@ import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.handler.BodyHandler;
 
 public class UserEndpointVerticle extends AbstractVerticle {
 
@@ -34,17 +35,19 @@ public class UserEndpointVerticle extends AbstractVerticle {
     final HealthHandler healthHandler = new HealthHandler(getVertx(), mongoClient);
 
     Router subRouter = Router.router(getVertx());
-//    subRouter.route().handler(RequestHelper::validateCustomerIdHeader);
+    subRouter.route().handler(BodyHandler.create());
+//    subRouter.route().handler(RequestHelper::validateAccessToKen);
     subRouter.get("/users").handler(userHandler::findAll);
     subRouter.get("/users/count").handler(userHandler::count);
-    subRouter.get("/users/:id").handler(userHandler::findById);
-    subRouter.delete("/users/:id").handler(userHandler::deleteById);
-    subRouter.put("/users/:id").handler(userHandler::updateById);
+    subRouter.get("/users/:userId").handler(userHandler::findById);
+    subRouter.post("/users").handler(userHandler::create);
+    subRouter.delete("/users/:userId").handler(userHandler::deleteById);
+    subRouter.put("/users/:userId").handler(userHandler::updateById);
 
     Router mainRouter = Router.router(getVertx());
     mainRouter.mountSubRouter(config().getString("basePath", Constants.BASE_PATH), subRouter);
 
-    mainRouter.route("/health*").handler(healthHandler.health());
+      mainRouter.route("/health*").handler(healthHandler.health());
 
     httpServer = getVertx().createHttpServer().requestHandler(mainRouter::handle)
       .listen(config().getInteger("http.port", Constants.HTTP_SERVER_PORT), ar -> {

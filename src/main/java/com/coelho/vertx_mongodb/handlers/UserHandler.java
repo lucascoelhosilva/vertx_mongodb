@@ -78,7 +78,8 @@ public class UserHandler {
 
   public void updateById(RoutingContext rc) {
     LOGGER.info("Object ======= " + rc.getBodyAsJson());
-    userRepository.update(Constants.MONGO_COLLECTION, rc.getBodyAsJson());
+    JsonObject user = new JsonObject().put("$set", rc.getBodyAsJson());
+    userRepository.update(Constants.MONGO_COLLECTION, rc.pathParam("id"), user);
     rc.response().setStatusCode(HttpResponseStatus.OK.code()).end();
   }
 
@@ -99,12 +100,12 @@ public class UserHandler {
 
     JsonObject object = new JsonObject();
 
-    Optional<String> productName = rc.queryParam("name").stream().findFirst();
-    productName.ifPresent(s -> object.put("name", s));
+    Optional<String> userName = rc.queryParam("name").stream().findFirst();
+    userName.ifPresent(s -> object.put("name", s));
 
-    String productId = rc.pathParam("productId");
-    if(productId != null && !productId.equals("")){
-      object.put("_id", productId);
+    String userId = rc.pathParam("userId");
+    if(userId != null && !userId.equals("")){
+      object.put("_id", userId);
     }
 
     return object;

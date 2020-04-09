@@ -9,7 +9,6 @@ import io.vertx.core.VertxOptions;
 public class Application {
 
   public static void main(String[] args) {
-
     Vertx vertx = Vertx.vertx(new VertxOptions());
 
     ConfigRetriever retriever = ConfigRetriever.create(vertx);
@@ -17,6 +16,5 @@ public class Application {
       DeploymentOptions deploymentOptions = new DeploymentOptions().setConfig(json.result());
       vertx.deployVerticle(UserEndpointVerticle.class, deploymentOptions);
     });
-
   }
 }

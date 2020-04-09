@@ -56,7 +56,7 @@ public class UserRepository {
 
     mongoClient.findOneAndDelete(collection, jsonQuery, mongoHandler -> {
       if (mongoHandler.succeeded()) {
-        LOGGER.debug("Removed access tokens: {0}", mongoHandler.result());
+        LOGGER.debug("Removed user: {0}", mongoHandler.result());
         handler.handle(Future.succeededFuture());
       } else {
         LOGGER.error("Failed to delete: {0}", mongoHandler.cause().getMessage());
@@ -79,24 +79,25 @@ public class UserRepository {
     });
   }
 
-  public void create(String collection, JsonObject product) {
-    mongoClient.save(collection, product, mongoResult -> {
+  public void create(String collection, JsonObject user) {
+    mongoClient.save(collection, user, mongoResult -> {
       if (mongoResult.succeeded()) {
         LOGGER.debug("Persisted into collection: {0}", collection);
       } else {
-        LOGGER.error("Failed to insert/update product: {0}", mongoResult.cause().getMessage());
+        LOGGER.error("Failed to insert/update user: {0}", mongoResult.cause().getMessage());
       }
     });
   }
 
-  public void update(String collection, JsonObject product) {
-    LOGGER.debug("product", product);
-    final JsonObject query = new JsonObject().put("_id", product.getValue("_id"));
-    mongoClient.findOneAndUpdate(collection, query, product, mongoResult -> {
+  public void update(String collection, String id, JsonObject user) {
+    LOGGER.debug("user", user);
+    final JsonObject query = new JsonObject().put("_id", id);
+
+    mongoClient.findOneAndUpdate(collection, query, user, mongoResult -> {
       if (mongoResult.succeeded()) {
         LOGGER.info("Persisted into collection: {0}", collection);
       } else {
-        LOGGER.info("Failed to insert/update product: {0}", mongoResult.cause().getMessage());
+        LOGGER.info("Failed to insert/update user: {0}", mongoResult.cause().getMessage());
       }
     });
   }

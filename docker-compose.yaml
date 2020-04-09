@@ -15,7 +15,7 @@ services:
     build: .
     environment:
       mongo: '{"hosts":[{"host":"mongodb-vertx","port":27017}],"username":"root","password":"root","db_name":"user-store","authSource":"admin","authMechanism":"SCRAM-SHA-1", "useObjectId": true}'
-      JAVA_OPTS: "-Djava.security.egd=file:/dev/./urandom -XX:+UseParallelGC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9009 -Xmx256m"
+      JAVA_OPTS: "-Djava.security.egd=file:/dev/./urandom -XX:+UseParallelGC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:9009 -Xmx256m"
       HTTP_PORT: 9090
       LOGGING_LEVEL: debug
     mem_limit: 200m
