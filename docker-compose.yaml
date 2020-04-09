@@ -1,0 +1,30 @@
+version: '2'
+services:
+  db:
+    image: mongo
+    container_name: mongodb-vertx
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: user-store
+    ports:
+      - "27018:2701"
+  api-user:
+    container_name: api-user
+    image: api-user
+    build: .
+    environment:
+      mongo: '{"hosts":[{"host":"mongodb-vertx","port":27017}],"username":"root","password":"root","db_name":"user-store","authSource":"admin","authMechanism":"SCRAM-SHA-1", "useObjectId": true}'
+      JAVA_OPTS: "-Djava.security.egd=file:/dev/./urandom -XX:+UseParallelGC -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=9009 -Xmx256m"
+      HTTP_PORT: 9090
+      LOGGING_LEVEL: debug
+    mem_limit: 200m
+    ports:
+      - "9090:9090"
+      - "9009:9009"
+    depends_on:
+      - db
+networks:
+  default:
+    external:
+      name: api-product
